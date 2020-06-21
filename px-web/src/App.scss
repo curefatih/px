@@ -1,0 +1,16 @@
+@import "./statics/scss/colors.scss";
+@import "./statics/scss/common.scss";
+*{
+  box-sizing: border-box;
+}
+html{
+  font-family: 'Roboto', sans-serif;
+}
+body{
+  background-color: $black;
+}
+
+.row{
+  margin-left: 0;
+  margin-right: 0;
+}

@@ -1,0 +1,65 @@
+@import "../../statics/scss/animations.scss";
+
+.home {
+  color: #fff;
+  height: 100vh;
+
+  .btn-wrap {
+    position: relative;
+    button {
+      padding: 20px;
+      border-radius: 2em;
+      border: none;
+      margin: 20px;
+      font-weight: bold;
+      color: transparentize($color: #fff, $amount: 0.8);
+      cursor: pointer;
+      outline: none;
+      opacity: 0.8;
+      animation: MoveUpDown 3s ease-in-out infinite;
+      transition: 0.2s ease all;
+      // position: absolute;
+      // left: 0;
+      // bottom: 0;
+
+      &:hover {
+        opacity: 1;
+      }
+
+      &:active {
+        color: #fff;
+      }
+
+      &.btn-red {
+        background: rgb(2, 0, 36);
+        background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgb(121, 9, 30) 69%);
+        -webkit-box-shadow: 0px 5px 50px 0px rgba(121, 9, 30, 1);
+        -moz-box-shadow: 0px 5px 50px 0px rgba(121, 9, 30, 1);
+        box-shadow: 0px 5px 50px 0px rgba(121, 9, 30, 1);
+      }
+
+      &.btn-blue {
+        background: rgb(2, 0, 36);
+        background: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgba(9, 88, 121, 1) 69%);
+        -webkit-box-shadow: 0px 5px 50px 0px rgba(9, 87, 121, 1);
+        -moz-box-shadow: 0px 5px 50px 0px rgba(9, 87, 121, 1);
+        box-shadow: 0px 5px 50px 0px rgba(9, 87, 121, 1);
+      }
+    }
+  }
+}
+
+.create-room_modal {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 100vw;
+  > .wrap {
+    height: 100%;
+    > .col {
+      height: 400px;
+      background-color: transparentize($color: #fff, $amount: 0.1);
+    }
+  }
+}

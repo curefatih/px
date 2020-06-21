@@ -1,0 +1,10 @@
+@import "../../statics/scss/colors.scss";
+
+.video-pair{
+  padding: 0;
+  margin-top: 50px;
+ 
+  .playlist_wrapper{
+    background-color: transparentize($color: $black, $amount: 0.4);
+  }
+}

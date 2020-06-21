@@ -1,0 +1,25 @@
+@import "../../statics/scss/colors.scss";
+
+.sidebar{
+  width: 50px;
+  height: 100%;
+  background-color: $black;
+  color: $light;
+  margin-top: 10px;
+  padding: 5px;
+
+  .icon{
+    border: 1px solid transparentize($color: $light, $amount: 0.9);
+    border-radius: .2em;
+    padding: 10px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    background-color: transparentize($color: $grey, $amount: 0.9);
+    cursor: pointer;
+    transition: .2s ease all;
+    &:hover{
+      background-color: transparentize($color: $grey, $amount: 0.5);
+    }
+  }
+}

@@ -1,0 +1,31 @@
+$black: #001;
+$dark: #1e272e;
+$light: #ecf0f1;
+$grey: #95afc0;
+$blue: #2980b9;
+$light-blue: #3498db;
+$green: #27ae60;
+$light-green: #2ecc71;
+
+$colors: (
+  "black": $black,
+  "dark": $dark,
+  "light": $light,
+  "grey": $grey,
+  "blue": $blue,
+  "light-blue": $light-blue,
+  "green": $green,
+  "light-green": $light-green
+);
+
+@each $color in $colors {
+  .#{nth($color,1)} {
+    color: nth($color,2);
+  }
+}
+
+@each $color in $colors {
+  .bg-#{nth($color, 1)} {
+    background-color: nth($color,2);
+  }
+}

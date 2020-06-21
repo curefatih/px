@@ -1,0 +1,7 @@
+import { connect } from "react-redux";
+
+export const ADD_PLAYLIST_ITEM = "ADD_PLAYLIST_ITEM";
+export const REMOVE_PLAYLIST_ITEM = "REMOVE_PLAYLIST_ITEM";
+export const MOVE_PLAYLIST_ITEM = "MOVE_PLAYLIST_ITEM";
+export const SET_SOCKET_INSTANCE = "SET_SOCKET_INSTANCE";
+export const UPDATE_PLAYLIST = "UPDATE_PLAYLIST";

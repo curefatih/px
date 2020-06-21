@@ -1,0 +1,44 @@
+@import "../../statics/scss/colors.scss";
+
+.playlist {
+  // background-color: #333;
+  position: relative;
+  // padding: 5px;
+  max-height: 570px;
+  overflow: hidden;
+  .header {
+    border-bottom: 1px solid transparentize($color: $black, $amount: 0.7);
+    margin-bottom: 5px;
+    padding: 10px;
+    background-color: transparentize($color: $light, $amount: 0.9);
+  }
+  .playlist-item_list {
+    padding: 10px;
+    // padding-top: 10px;
+    height: 480px;
+    overflow-y: auto;
+    .playlist-item {
+      width: 100%;
+      margin: 5px 0;
+      border: 1px solid transparentize($color: $light, $amount: 0.9);
+      border-radius: 0.2rem;
+
+      .item-buttons {
+        opacity: 0;
+        button{
+          height: 100%;
+          cursor: pointer;
+        }
+        transition: ease 0.2s all ;
+      }
+      &:hover .item-buttons {
+        opacity: 1;
+      }
+
+      .video-name{
+        padding: 3px;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}

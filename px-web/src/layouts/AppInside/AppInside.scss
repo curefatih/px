@@ -1,0 +1,27 @@
+@import "../../statics/scss/colors.scss";
+
+.app-inside {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+
+  .app-inside_container_wrapper {
+    flex: 1 1 100%;
+    height: 100vh;
+    // background-color: $light;
+    border-radius: 0.2em 0 0 0;
+    border-left: 1px solid transparentize($color: $black, $amount: 0.1);
+    margin-top: 10px;
+    box-shadow: inset 7px 10px 5px -5px rgba(0,0,0,0.24);
+    padding: 10px;
+    background-color: transparentize($color: $light, $amount: 0.5);
+    
+    .app-inside_container {
+      height: 100%;
+      overflow-y: auto;
+      position: relative;
+      // overflow: hidden;
+    }
+  }
+}
