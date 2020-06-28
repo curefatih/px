@@ -6,7 +6,7 @@ import "./Room.scss";
 import { useEffect } from 'react';
 import { useParams, useHistory, Redirect, Switch, Route } from 'react-router-dom';
 import AuthService from '../../services/Auth';
-import { CheckIsPasswordRequired, LoginRoom, CheckTokenIsValıd } from '../../services/Data';
+import { CheckIsPasswordRequired, LoginRoom, CheckTokenIsValid } from '../../services/Data';
 import { useState } from 'react';
 import Login from './Login/Login';
 
@@ -30,41 +30,42 @@ function Room({ CheckIsPasswordRequired }) {
     console.log("ROOM ID", roomID, history);
     if (!roomID) history.replace("/");
 
-    if (!AuthService.isTokenExist() || AuthService.getDecodedToken()?.roomID != roomID) {
-      CheckIsPasswordRequired(roomID)
-        .then(res => {
-          console.log("PASSWORD REQUIRED:", res);
-          if (res.passRequired !== null || res.passRequired !== undefined) {
-            if (res.passwordRequired) {
+    CheckIsPasswordRequired(roomID)
+      .then(res => {
+        console.log("PASSWORD REQUIRED:", res);
+        if (res?.room?.passRequired !== null || res?.room?.passRequired !== undefined) {
+          if (res?.room?.passwordRequired) {
+            // setPassRequired(true);
+
+            if (!AuthService.isTokenExist() || AuthService.getDecodedToken()?.roomID != roomID) {
+              setLoading({ ...loading, isLoading: false })
               setPassRequired(true);
+            } else {
+              CheckTokenIsValid(roomID)
+                .then(res => {
+                  console.log("RES", res);
+                  if (res) {
+                    setTimeout(() => {
+                      setLoading({ ...loading, isLoading: false })
+                      setPassRequired(false)
+                    }, 1000);
+                  } else {
+                    setLoading({ ...loading, isLoading: false })
+                    setPassRequired(true);
+                  }
+                })
             }
-            if (res.passwordRequired === false) {
-              setPassRequired(false);
-            }
-            setTimeout(() => {
-              setLoading({ ...loading, isLoading: false })
-            }, 1000);
+
           }
-        })
-    } else {
-      CheckTokenIsValıd(roomID)
-        .then(res => {
-          console.log("RES", res);
-          if (res) {
-            setTimeout(() => {
-              setLoading({ ...loading, isLoading: false })
-              setPassRequired(false)
-            }, 1000);
-          } else {
+          if (res?.room?.passwordRequired === false) {
+            console.log("pass not required");
             setLoading({ ...loading, isLoading: false })
-            setPassRequired(true);
+            setPassRequired(false);
           }
-        })
-      console.log("PASSWORD REQUIRED2:", passRequired);
-    }
+        }
+      });
 
-    // console.log("=>", AuthService.getDecodedToken().roomID, roomID);
-
+    console.log("PASSWORD REQUIRED2:", passRequired);
 
   }, [])
 
@@ -79,7 +80,7 @@ function Room({ CheckIsPasswordRequired }) {
       <AppInside>
         {!loading.isLoading ?
           passRequired ?
-            <Login roomID={roomID} onLoginSubmit={(state) => setIsLoggedIn(state)} /> :
+            <Login roomID={roomID} onLoginSubmit={(state) => handleLogin(state)} /> :
             <div className="awr_container">
               <VideoPair />
             </div> :
