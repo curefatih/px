@@ -3,7 +3,8 @@ var router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
-
+const roomAdapter = require('../lib/redis/roomAdapter');
+const { json } = require('express');
 
 /**
  * Refactor note:
@@ -15,6 +16,9 @@ router.get('/', function (req, res, next) {
 
 router.post('/create', function (req, res) {
   const { passwordRequired, password } = req.body;
+
+  console.log("pr: ", passwordRequired);
+
 
   const roomID = uuidv4();
   const userID = uuidv4();
@@ -28,6 +32,17 @@ router.post('/create', function (req, res) {
     },
     process.env.JWT_SECRET);
 
+  const room = {
+    createdBy: userID,
+    //members: JSON.stringify([userID]),
+    id: roomID,
+    password: passwordRequired ? password : "",
+    passwordRequired: passwordRequired ? true : false
+  }
+
+  roomAdapter.createRoom(roomID, room);
+  roomAdapter.joinRoom(roomID, userID);
+
   res.status(200);
   res.json({
     roomID,
@@ -36,59 +51,110 @@ router.post('/create', function (req, res) {
 });
 
 router.get('/:roomID', function (req, res) {
-  res.status(200);
-  res.json({
-    passwordRequired: true
-  })
+
+  const { roomID } = req.params;
+
+  roomAdapter.getRoomById(roomID)
+    .then(room => {
+      console.log("ROOM VALUES:", room);
+      const { password, passwordRequired, ...restRoom } = room;
+
+      res.status(200);
+      res.json({
+        room: {
+          ...restRoom,
+          passwordRequired: passwordRequired == "false" ? false : true
+        }
+      })
+
+    })
+    .catch(err => {
+      res.status(400);
+      res.json({
+        error: {
+          status: err.code || "0",
+          message: err.message
+        }
+      })
+    })
+
+
 })
 
 router.post('/login', function (req, res) {
 
-  const { roomID, passwordRequired, password } = req.body;
+  const { roomID, password } = req.body;
 
-  if (password == "pass") {
-    const userID = uuidv4();
+  roomAdapter.getRoomById(roomID)
+    .then(room => {
+      if (room.password === password) {
+        const userID = uuidv4();
+        const token = jwt.sign(
+          {
+            roomID,
+            userID
+          },
+          process.env.JWT_SECRET);
 
-    const token = jwt.sign(
-      {
-        roomID,
-        userID
-      },
-      process.env.JWT_SECRET);
+        roomAdapter.joinRoom(roomID, userID)
 
-    res.status(200);
-    res.json({
-      roomID,
-      authToken: token
-    });
-  } else {
-    res.status(401);
-    res.json({
-      error: {
-        message: "Wrong credentials"
+        res.status(200);
+        res.json({
+          roomID,
+          authToken: token
+        });
+      } else {
+        res.status(401);
+        res.json({
+          error: {
+            message: "Wrong credentials"
+          }
+        });
       }
-    });
-  }
+    })
+    .catch(err => {
+      res.status(400);
+      res.json({
+        error: {
+          status: err.code || "0",
+          message: err.message
+        }
+      })
+    })
 });
 
 router.get('/:roomID/checkMember', function (req, res) {
 
-  // check for this
+  const { roomID } = req.params;
   const token = req.headers.authorization.split(" ")[1];
   if (token != "") {
     try {
       const decoded = jwt.decode(token)
-      if (decoded.userID == "5f057d1b-7fcf-4fa7-a94e-35bedb65395a") {
-        console.log("member");
-        
-        res.status(200);
-        res.json({ isMember: true });
-      } else { throw new Error("Not a member") }
+      roomAdapter.checkMember(roomID, decoded.userID)
+        .then(resp => {
+          console.log("resp: ", resp);
+
+          if (resp) {
+            res.status(200);
+            res.json({ isMember: true });
+          } else {
+            throw new Error("Not a member")
+          }
+        })
+        .catch(err => {
+          res.status(401);
+          res.json({ isMember: false });
+        })
+
     } catch (error) {
       console.log("not member");
       res.status(401);
       res.json({ isMember: false });
     }
+  }else{
+    console.log("not member");
+    res.status(401);
+    res.json({ isMember: false });F
   }
 
 
