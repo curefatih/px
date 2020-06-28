@@ -1,0 +1,27 @@
+@import "../../statics/scss/colors.scss";
+
+.input-custom {
+  padding: 8px 20px;
+  border-width: 1px 3px 3px 1px;
+  border-color: $dark;
+  border-radius: 0.2em;
+  margin: 5px 5px 5px 0;
+  outline: none;
+  cursor: pointer;
+  transition: 0.2s ease all;
+
+  &:disabled {
+    opacity: 0.2;
+  }
+
+  @each $color in $colors {
+    &.input-#{nth($color,1)} {
+      &:hover {
+        box-shadow: 3px 3px 0 nth($color, 2);
+      }
+      &:focus {
+        box-shadow: 3px 3px 0 nth($color, 2);
+      }
+    }
+  }
+}
