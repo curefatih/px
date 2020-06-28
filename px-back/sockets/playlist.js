@@ -42,7 +42,7 @@ function playlist(http) {
 
       socket.on('video_action', function (msg) {
         console.log("video_action:", msg);
-        io.emit('video_action', {
+        socket.broadcast.emit('video_action', {
           ...msg
         });
       });
