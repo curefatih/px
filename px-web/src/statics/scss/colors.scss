@@ -1,3 +1,4 @@
+$default: #292929;
 $black: #001;
 $dark: #1e272e;
 $light: #ecf0f1;
@@ -8,6 +9,7 @@ $green: #27ae60;
 $light-green: #2ecc71;
 
 $colors: (
+  "default": $default,
   "black": $black,
   "dark": $dark,
   "light": $light,
