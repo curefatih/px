@@ -16,33 +16,33 @@ import "./VideoPlayer.scss"
 import { MdExposurePlus1 } from "react-icons/md";
 import AuthService from '../../services/Auth';
 
-// let sync = false;
+window._sync = false;
+const onStateChange = (event, socket) => {
+  if (!socket) return;
+  console.log("STATE CHANGED, WILL EMIT? :", !window._sync, event.data);
+  if (!window._sync) {
+    socket.emit('video_action', {
+      user: AuthService.getUserID(),
+      type: event.data,
+      time: Math.floor(event.target.getCurrentTime()),
+    });
+  }
+  console.log("---> SYNC: ", window._sync);
 
+  window._sync = false;
+}
 const VideoPlayer = ({
   items,
   socket,
-  removePlaylistItem,
   updatePlaylist,
   setSocketConnection }) => {
   const videoPlayerRef = useRef(null);
-  const [sync, setSync] = useState(false);
 
-  const onStateChange = (event) => {
-    // console.log("STATUS CHANGED WILL EMIT?:", socket !== null && !sync, sync);
+  // let isSyncing = false;
 
-    if (socket !== null && !sync) {
-      socket.emit('video_action', {
-        user: AuthService.getUserID(),
-        type: event.data,
-        time: event.target.getCurrentTime(),
-        pID: uuidv4()
-      });
-    }
-
-  }
 
   useEffect(() => {
-
+    
     const socketClient = io("http://localhost:5000/",
       {
         query: {
@@ -68,34 +68,38 @@ const VideoPlayer = ({
     })
 
     socketClient.on('video_action', function (msg) {
+      window.player = videoPlayerRef.current.internalPlayer
+      if (!videoPlayerRef.current) return;
 
-      console.log("VIDEO ACTION");
-      if (videoPlayerRef.current && AuthService.getUserID() !== msg.user) {
-      
-        switch (msg?.type) {
+      window._sync = true;
+      console.log("NOT SAME USER ?:", AuthService.getUserID(), msg.user, AuthService.getUserID() !== msg.user);
+      console.log("switch ? ", window._sync);
+
+
+      if (AuthService.getUserID() !== msg.user) {
+        // console.log("HERE", msg);
+
+        switch (msg.type) {
           case 0: // ended
 
             break;
 
+          case -1:
           case 1: // playing,
-            setSync(true)
-            videoPlayerRef.current.internalPlayer.playVideo()
-              .then(() => { setSync(false) })
+            console.log("PLAY", msg.time)
+            videoPlayerRef.current.internalPlayer.seekTo(msg.time, false)
+              .then(() => {
+                videoPlayerRef.current.internalPlayer.playVideo()
+              })
+            // console.log("loaded", videoPlayerRef.current.internalPlayer.getVideoLoadedFraction());
+
             break;
 
           case 2: // paused
-     
-            setSync(true)
-            if (sync)
-              console.log("henlo");
-
-            videoPlayerRef.current.internalPlayer.pauseVideo()
-              .then(() => { setSync(false) })
-
-            break;
-
           case 3: // buffering
-
+            console.log("PAUSE")
+            videoPlayerRef.current.internalPlayer.pauseVideo()
+            // window._sync = false
             break;
 
           case 5: // video cued
@@ -104,6 +108,7 @@ const VideoPlayer = ({
         }
       }
     });
+    window._sync = false
   }, [])
 
   return (
@@ -121,12 +126,12 @@ const VideoPlayer = ({
             // className={string}                // defaults -> null
             // containerClassName={string}       // defaults -> ''
             // opts={obj}                        // defaults -> {}
-            // onReady={func}                    // defaults -> noop
+            onReady={() => console.log("Im ready!!")}                    // defaults -> noop
             // onPlay={func}                     // defaults -> noop
             // onPause={func}                    // defaults -> noop
             // onEnd={func}                      // defaults -> noop
             // onError={func}                    // defaults -> noop
-            onStateChange={(event) => onStateChange(event)}              // defaults -> noop
+            onStateChange={(event) => onStateChange(event, socket)}              // defaults -> noop
           // onPlaybackRateChange={func}       // defaults -> noop
           // onPlaybackQualityChange={func}    // defaults -> noop
           />
