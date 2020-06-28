@@ -6,14 +6,17 @@ const headers = {
   "Content-Type": "application/json"
 }
 
-export function CreateRoom(pass) {
+export function CreateRoom(pass, passwordRequired) {
+  console.log("asd: ", pass, passwordRequired);
+  
   return fetch(API_URL + "/rooms/create",
     {
       method: "POST",
       headers,
       body: JSON.stringify(
         {
-          password: pass
+          password: pass,
+          passwordRequired
         }
       )
     })
@@ -42,11 +45,11 @@ export function CheckIsPasswordRequired(roomID) {
     .then(res => res.json())
 }
 
-export async function CheckTokenIsValıd(roomID) {
+export async function CheckTokenIsValid(roomID) {
   console.log("here");
   if (!AuthService.isTokenValid()) Promise.resolve(false);
   console.log("here");
-  return fetch(API_URL + "/rooms/"+ roomID + "/checkMember", {
+  return fetch(API_URL + "/rooms/" + roomID + "/checkMember", {
     "headers": {
       "authorization": "Bearer " + AuthService.getToken()
     }
