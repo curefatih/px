@@ -1,0 +1,28 @@
+@import "../../statics/scss/colors.scss";
+
+.button-custom {
+  background-color: $light;
+  border: 2px solid transparentize($color: $dark, $amount: 0.6);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 2em;
+  cursor: pointer;
+  font-weight: bold;
+  outline: none;
+  transition: .2s ease all;
+
+  @each $c in $colors {
+    &.button-#{nth($c,1)} {
+      background-color: nth($c, 2);
+      color: invert($color: nth($c,2));
+      &:hover {
+        box-shadow: 3px 3px 0  grayscale($color: nth($c, 2));
+        background-color: grayscale($color: nth($c, 2));
+        // color: invert($color: nth($c, 2));
+      }
+      &:focus {
+        box-shadow: 3px 3px 0 nth($c, 2);
+      }
+    }
+  }
+}
