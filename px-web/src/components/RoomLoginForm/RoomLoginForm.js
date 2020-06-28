@@ -7,6 +7,8 @@ import { LoginRoom } from '../../services/Data';
 import AuthService from '../../services/Auth';
 import { useHistory } from 'react-router-dom';
 import { useEffect } from 'react';
+import Input from '../Input/Input';
+import Button from '../Button/Button';
 
 const RoomLogin = ({ roomID, LoginRoom, onLoginSubmit }) => {
   const [status, setStatus] = useState({
@@ -21,7 +23,7 @@ const RoomLogin = ({ roomID, LoginRoom, onLoginSubmit }) => {
 
 
   useEffect(() => {
-
+    onLoginSubmit({...status})
   }, [status])
 
   const handleLoginSubmit = (e) => {
@@ -65,17 +67,25 @@ const RoomLogin = ({ roomID, LoginRoom, onLoginSubmit }) => {
   return (
     <div className="room-login wrap xl-flexbox xl-center xl-middle" >
 
-      <div className="col xl-1-2">
+      <div className="col xl-2-5">
         <form onSubmit={(e) => { handleLoginSubmit(e) }}>
-          <div className="wrap">
+          <div className="wrap xl-right">
             <div className="col xl-1-1">
-              <h6>Login</h6>
+              <h6 className="light">Login</h6>
             </div>
             <div className="col xl-1-1">
-              <input autoComplete="off" type="password" name="roomPass" onChange={(e) => setPassword(e.target.value)} />
+              <Input
+                autoComplete="off"
+                type="password"
+                name="roomPass"
+                placeholder="room password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
             <div className="col xl-1-1">
-              <button type="submit">OK</button>
+              <Button
+                type="submit"
+              >OK</Button>
             </div>
             <div className="col xl-1-1">
               {status.error.status ? status.error.message : ""}

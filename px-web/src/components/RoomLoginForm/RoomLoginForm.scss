@@ -1,3 +1,17 @@
-.room-login{
+@import "../../statics/scss/colors.scss";
+
+.room-login {
   height: 100%;
+  input {
+    width: 100%;
+  }
+  form {
+    .wrap {
+      > .col:not(:last-of-type) {
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid transparentize($color: $default, $amount: 0.8);
+      }
+    }
+  }
 }
